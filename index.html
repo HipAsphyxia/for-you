@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LuckyQiqi 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff8fb1; --pink-soft:#ffd9e6; --rose:#e0457b;
+    --mint:#c9f2d9; --mint-d:#8fd9ae; --green:#2f9e6f; --green-d:#1f6f4f;
+    --cream:#fffaf6; --text:#4a2c3d;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Quicksand',sans-serif; color:var(--text);
+    background:
+      radial-gradient(circle at 12% 18%, #ffe0ec88 0 90px, transparent 91px),
+      radial-gradient(circle at 88% 70%, #bff0d288 0 120px, transparent 121px),
+      linear-gradient(160deg,#e6faee 0%,#fff0f6 50%,#d7f5e3 100%);
+    background-attachment:fixed; min-height:100vh; overflow-x:hidden;
+    cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Ctext y='22' font-size='22'%3E💗%3C/text%3E%3C/svg%3E") 14 14, auto;
+  }
+  #garden,#fx{position:fixed;inset:0;pointer-events:none;z-index:1}
+  #fx{z-index:50}
+  main{position:relative;z-index:2}
+  .view{display:none;padding-top:56px;padding-bottom:110px}
+  .view.active{display:block;animation:fadein .5s ease}
+  @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  section{max-width:880px;margin:0 auto;padding:60px 22px;text-align:center}
+
+  /* brand + nav */
+  .brand{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:45;font-family:'Pacifico',cursive;
+    font-size:1.25rem;color:var(--rose);background:#ffffffcc;backdrop-filter:blur(8px);padding:6px 20px;border-radius:999px;
+    box-shadow:0 6px 16px #2f9e6f22;border:2px solid var(--mint);white-space:nowrap}
+  .brand b{color:var(--green);font-weight:400}
+  .tabs{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:45;display:flex;gap:4px;background:#ffffffee;
+    backdrop-filter:blur(10px);padding:6px;border-radius:999px;box-shadow:0 10px 26px #e0457b33;border:2px solid var(--pink-soft)}
+  .tabs button{font-family:inherit;font-weight:700;font-size:.72rem;color:var(--green-d);background:transparent;border:none;
+    border-radius:999px;padding:7px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:.2s}
+  .tabs button span{font-size:1.25rem}
+  .tabs button.on{background:linear-gradient(135deg,#ff8fb1,#e0457b);color:#fff}
+  .tabs button.hidden{display:none}
+
+  /* hero */
+  .hero{min-height:calc(100vh - 56px);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px}
+  .hero h1{font-family:'Pacifico',cursive;font-size:clamp(2.4rem,9vw,4.6rem);color:var(--rose);
+    text-shadow:3px 3px 0 #fff,0 0 30px #ffb6cf}
+  .hero h1 span{color:var(--green);text-shadow:3px 3px 0 #fff,0 0 30px #a5e8c3}
+  .hero p{font-size:1.1rem;font-weight:600;max-width:460px}
+  .big-heart{font-size:5rem;animation:beat 1.2s infinite;cursor:pointer;user-select:none;filter:drop-shadow(0 6px 10px #ff8fb166)}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.22)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+  .hint{font-size:.95rem;opacity:.75;animation:bob 2s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(6px)}}
+  .btn{font-family:inherit;font-weight:700;font-size:1.05rem;color:#fff;background:linear-gradient(135deg,#ff8fb1,#e0457b);
+    border:none;border-radius:999px;padding:13px 28px;cursor:pointer;box-shadow:0 8px 20px #e0457b44;transition:transform .2s}
+  .btn:hover{transform:translateY(-3px) scale(1.04)}
+  .btn:active{transform:scale(.96)}
+  .btn.green{background:linear-gradient(135deg,#6fd7a0,#2f9e6f);box-shadow:0 8px 20px #2f9e6f44}
+  .btn.small{font-size:.9rem;padding:9px 18px}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+  h2{font-family:'Pacifico',cursive;font-weight:400;font-size:clamp(1.9rem,6vw,2.7rem);color:var(--rose);margin-bottom:10px}
+  h3.sec{font-weight:700;color:var(--green-d);margin:26px 0 12px;font-size:1.15rem;text-align:left}
+  .sub{margin-bottom:30px;opacity:.8}
+
+  /* counter */
+  .counter{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .tile{background:#fff;border-radius:22px;padding:18px 20px;min-width:96px;box-shadow:0 10px 24px #2f9e6f22;border:2px dashed var(--mint-d)}
+  .tile b{display:block;font-size:2rem;color:var(--rose)}
+  .tile span{font-size:.85rem;font-weight:600;color:var(--green-d)}
+
+  /* flip cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+  .card{perspective:900px;height:190px;cursor:pointer}
+  .inner{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,1.6,.5,1);transform-style:preserve-3d}
+  .card.flip .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:24px;display:flex;align-items:center;justify-content:center;padding:18px;
+    font-weight:700;box-shadow:0 10px 24px #e0457b22}
+  .front{background:linear-gradient(135deg,#ffd6e5,#c9f2d9);font-size:2.8rem}
+  .back{background:#fff;transform:rotateY(180deg);border:3px solid var(--mint);font-size:.95rem;line-height:1.5}
+
+  /* letter */
+  .letter{background:#fffdf8;border-radius:10px;padding:36px 28px;text-align:left;max-width:620px;margin:0 auto;
+    box-shadow:0 14px 34px #2f9e6f22;position:relative;border:2px solid var(--mint);
+    background-image:repeating-linear-gradient(transparent,transparent 31px,#ffd9e6 32px)}
+  .letter p{line-height:32px;font-size:1.05rem;min-height:200px;white-space:pre-wrap}
+  .letter::after{content:"💌";position:absolute;top:-22px;right:18px;font-size:2.4rem}
+  .caret{display:inline-block;width:2px;height:1.1em;background:var(--rose);vertical-align:middle;animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:0}}
+  .tiny{font-size:.8rem;opacity:.6;margin-top:12px}
+
+  /* question */
+  .q-wrap{min-height:240px;position:relative}
+  .q-wrap .btn{margin:8px}
+
+  /* dates */
+  .list{display:flex;flex-direction:column;gap:12px}
+  .date-card{display:flex;gap:14px;align-items:center;text-align:left;background:#fff;border-radius:22px;padding:14px 16px;
+    box-shadow:0 8px 20px #2f9e6f1f;border:2px solid var(--mint)}
+  .date-card.up{border-color:var(--pink-soft)}
+  .date-emoji{font-size:2rem;background:linear-gradient(135deg,#ffd6e5,#c9f2d9);border-radius:50%;width:54px;height:54px;
+    display:flex;align-items:center;justify-content:center;flex:none}
+  .date-info{flex:1;min-width:0}
+  .date-info b{display:block;font-size:1.05rem}
+  .date-info small{display:block;opacity:.75;margin-top:2px}
+  .chip{display:inline-block;background:var(--rose);color:#fff;font-size:.7rem;font-weight:700;border-radius:999px;padding:2px 9px;margin-left:6px;vertical-align:middle}
+  .chip.g{background:var(--green)}
+  .x{background:none;border:none;font-size:1.1rem;cursor:pointer;opacity:.45;padding:6px}
+  .x:hover{opacity:1}
+  .empty{opacity:.6;font-weight:600;padding:14px;text-align:center}
+  .form{background:#ffffffcc;border:2px dashed var(--mint-d);border-radius:24px;padding:18px;margin-top:30px;display:grid;gap:10px;text-align:left}
+  .form h3{color:var(--green-d)}
+  input,select,textarea{font-family:inherit;font-size:1rem;padding:11px 14px;border-radius:14px;border:2px solid var(--pink-soft);
+    background:#fff;color:var(--text);width:100%;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--pink)}
+  .row{display:flex;gap:10px}
+  .row > *{flex:1;min-width:0}
+  .row .narrow{flex:0 0 84px}
+
+  /* roulette */
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:6px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chips button{font-family:inherit;font-weight:700;font-size:.9rem;white-space:nowrap;background:#fff;color:var(--green-d);
+    border:2px solid var(--mint);border-radius:999px;padding:8px 14px;cursor:pointer;flex:none}
+  .chips button.on{background:linear-gradient(135deg,#ff8fb1,#e0457b);color:#fff;border-color:transparent}
+  .wheel-box{position:relative;display:inline-block;margin:8px 0 14px}
+  .pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:2rem;z-index:3;filter:drop-shadow(0 3px 3px #0003)}
+  #wheel{border-radius:50%;box-shadow:0 14px 34px #e0457b44,0 0 0 8px #fff,0 0 0 12px var(--mint-d);display:block}
+  .result{min-height:84px;margin:10px 0 6px}
+  .result .big{font-family:'Pacifico',cursive;font-size:2rem;color:var(--rose);animation:pop .6s cubic-bezier(.3,1.7,.5,1)}
+  @keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+  .editor{background:#ffffffcc;border:2px dashed var(--mint-d);border-radius:24px;padding:16px;margin-top:22px;text-align:left}
+  .editor h3{color:var(--green-d);margin-bottom:10px}
+  .items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .item{background:var(--mint);border-radius:999px;padding:5px 6px 5px 12px;font-weight:600;font-size:.88rem;display:flex;align-items:center;gap:4px}
+  .item button{background:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:.7rem;color:var(--rose)}
+  .editor .row{margin-bottom:10px}
+  .links{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+  .link{background:none;border:none;font-family:inherit;font-weight:700;color:var(--rose);cursor:pointer;text-decoration:underline;font-size:.9rem}
+
+  /* surprise */
+  .surprise{min-height:calc(100vh - 160px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:10px 20px}
+  .flower-stage{position:relative;width:min(86vw,400px);aspect-ratio:1}
+  .flower-stage svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 22px #ff8fb199) drop-shadow(0 0 40px #8fd9ae88);animation:breathe 5s ease-in-out infinite}
+  @keyframes breathe{50%{transform:scale(1.05)}}
+  .layer{transform-box:view-box;transform-origin:50% 50%}
+  .l1{animation:spin 26s linear infinite}
+  .l2{animation:spin 17s linear infinite reverse}
+  .l3{animation:spin 11s linear infinite}
+  .l4{animation:spin 42s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .orbit{position:absolute;inset:0;animation:spin 20s linear infinite}
+  .orbit span{position:absolute;left:50%;top:50%;font-size:1.5rem;margin:-.75rem 0 0 -.75rem}
+  .surprise h2{font-size:clamp(2rem,8vw,3.2rem)}
+  .twinkle{position:absolute;animation:tw 2.2s ease-in-out infinite}
+  @keyframes tw{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+
+  footer{padding:10px 20px 20px;text-align:center;font-weight:600;position:relative;z-index:2}
+  .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#fff;padding:10px 20px;border-radius:999px;
+    box-shadow:0 8px 20px #e0457b33;font-weight:700;z-index:60;opacity:0;transition:opacity .4s;pointer-events:none;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+  .toast.show{opacity:1}
+
+  /* flowers & floaties */
+  .flower{position:absolute;transform-origin:50% 100%;animation:grow 1s cubic-bezier(.3,1.7,.5,1) both;pointer-events:none}
+  @keyframes grow{from{transform:scale(0) rotate(-25deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+  .flower svg{overflow:visible;animation:sway 4s ease-in-out infinite;transform-origin:50% 100%}
+  @keyframes sway{50%{transform:rotate(4deg)}0%,100%{transform:rotate(-4deg)}}
+  .float-heart{position:fixed;bottom:-40px;pointer-events:none;z-index:0;animation:rise linear forwards}
+  @keyframes rise{to{transform:translateY(-115vh) rotate(25deg);opacity:0}}
+  .sticker{position:fixed;z-index:55;pointer-events:none;animation:stick 3.4s ease-out forwards;white-space:nowrap;
+    font-weight:700;text-shadow:0 2px 0 #fff,0 0 12px #fff}
+  @keyframes stick{0%{transform:translateY(0) scale(0) rotate(-15deg);opacity:0}
+    15%{transform:translateY(-10px) scale(1.3) rotate(6deg);opacity:1}
+    30%{transform:translateY(-16px) scale(1) rotate(0)}
+    100%{transform:translateY(-90px) scale(1);opacity:0}}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+  @media (max-width:420px){.tabs button{padding:7px 9px}}
+</style>
+</head>
+<body>
+
+<div class="brand">Lucky<b>Qiqi</b> 💚🌸</div>
+<div id="garden"></div>
+<canvas id="fx"></canvas>
+
+<main>
+  <!-- HOME -->
+  <div class="view active" id="view-home">
+    <section class="hero">
+      <div class="big-heart" id="bigHeart" title="tap me!">💖</div>
+      <h1>I love you, <span id="nm">Qiqi</span></h1>
+      <p>I made you a tiny garden. Tap anywhere to make flowers bloom 🌸</p>
+      <button class="btn" id="bloomBtn">Plant a bouquet 💐</button>
+      <div class="hint">↓ scroll, there's more ↓</div>
+    </section>
+
+    <section>
+      <h2>Our time together</h2>
+      <p class="sub">since June 2025, and every second is my favorite 💚</p>
+      <div class="counter" id="counter"></div>
+    </section>
+
+    <section>
+      <h2>Reasons I love you</h2>
+      <p class="sub">tap a card to flip it 💗</p>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section>
+      <h2>A little letter</h2>
+      <p class="sub">just for you</p>
+      <div class="letter" id="letterBox"><p id="letter"></p></div>
+      <p class="tiny">(tap the letter to show it all at once)</p>
+    </section>
+
+    <section>
+      <h2>One important question</h2>
+      <p class="sub">please answer honestly 🥺</p>
+      <div class="q-wrap" id="qwrap">
+        <p style="font-weight:700;font-size:1.25rem;margin-bottom:18px" id="qtext">Will you keep being my favorite person?</p>
+        <button class="btn" id="yes">Yes!! 💖</button>
+        <button class="btn green" id="no">No 😈</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- DATES -->
+  <div class="view" id="view-dates">
+    <section>
+      <h2>Our Dates</h2>
+      <p class="sub">every little adventure with you 💚</p>
+
+      <h3 class="sec">Coming up 💌</h3>
+      <div class="list" id="upcoming"></div>
+
+      <h3 class="sec">Memories 🌷</h3>
+      <div class="list" id="past"></div>
+
+      <form class="form" id="dateForm">
+        <h3>Add a date 🌸</h3>
+        <div class="row">
+          <select id="dEmoji" class="narrow" aria-label="emoji">
+            <option>💕</option><option>🎬</option><option>🏝️</option><option>🍜</option><option>☕</option><option>🎡</option>
+            <option>🌸</option><option>🍓</option><option>🎮</option><option>🌅</option><option>🐠</option><option>🛍️</option>
+          </select>
+          <input id="dTitle" placeholder="What's the date? (e.g. Movie night)" required maxlength="60">
+        </div>
+        <div class="row">
+          <input id="dDate" type="date" required>
+          <input id="dTag" placeholder="Label (optional)" maxlength="20">
+        </div>
+        <input id="dNote" placeholder="Little note (optional)" maxlength="120">
+        <button class="btn" type="submit">Add to our list 💖</button>
+        <p class="tiny" style="margin-top:0">future dates show up under "Coming up" with a countdown.</p>
+      </form>
+    </section>
+  </div>
+
+  <!-- ROULETTE -->
+  <div class="view" id="view-roulette">
+    <section>
+      <h2>Date Roulette</h2>
+      <p class="sub">can't decide? let the wheel choose 🎡</p>
+
+      <div class="chips" id="chips"></div>
+      <select id="dishSel" aria-label="dishes by cuisine"></select>
+
+      <div class="wheel-box">
+        <div class="pointer">📍</div>
+        <canvas id="wheel"></canvas>
+      </div>
+      <div><button class="btn" id="spinBtn">Spin! 🎰</button></div>
+      <div class="result" id="result"></div>
+
+      <div class="editor">
+        <h3 id="edTitle">Edit this wheel</h3>
+        <div class="items" id="items"></div>
+        <div class="row">
+          <input id="newItem" placeholder="Add an option…" maxlength="40">
+          <button class="btn small green" id="addItem" style="flex:0 0 auto">Add</button>
+        </div>
+        <div class="links"><button class="link" id="resetWheel">Reset to default</button></div>
+      </div>
+
+      <form class="editor" id="wheelForm">
+        <h3>Make a new wheel ✨</h3>
+        <div class="row">
+          <input id="wName" placeholder="Wheel name (e.g. Where to go)" required maxlength="24">
+        </div>
+        <textarea id="wItems" rows="3" placeholder="Options, separated by commas or new lines" required></textarea>
+        <button class="btn small" type="submit" style="margin-top:10px">Create wheel 💖</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- SURPRISE -->
+  <div class="view" id="view-surprise">
+    <div class="surprise">
+      <h2>You said yes!! 🥹💖</h2>
+      <div class="flower-stage" id="stage"></div>
+      <p style="font-weight:700;font-size:1.15rem">I love you, Qiqi. Forever &amp; always 💚</p>
+      <button class="btn small green" id="backHome">← back to our garden</button>
+    </div>
+  </div>
+</main>
+
+<footer>made with all my love 💕 <span id="from"></span></footer>
+<nav class="tabs" id="tabs">
+  <button data-tab="home" class="on"><span>🏡</span>Home</button>
+  <button data-tab="dates"><span>📅</span>Dates</button>
+  <button data-tab="roulette"><span>🎡</span>Roulette</button>
+  <button data-tab="surprise" class="hidden" id="tabSurprise"><span>🌻</span>Surprise</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ ✏️ EDIT THESE ============ */
+const CONFIG = {
+  herName: "Qiqi",
+  fromName: "Luckyy",
+  startDate: "2025-06-01",              // together since early June 2025
+  reasons: [
+    ["😍","You're the cutest, prettiest, sexiest person in the whole world, in my eyes."],
+    ["💪","You've been so strong through your whole life, and I admire you so much, my love."],
+    ["⚡","You're my energy source. You help me get through every single day."],
+    ["🎮","You're the best duo I have in MLBB. My favorite MVP, in game and in life."],
+    ["🥹","You're the most understanding and caring person I've ever met."],
+    ["🏡","You feel like home to me, and loving you is the easiest thing I've ever done."]
+  ],
+  defaultDates: [
+    { id:"d_ocean", title:"Ocean Park date", date:"2026-10-02", tag:"First Date", note:"Our very first date 🐠💚", emoji:"🐠" }
+  ],
+  letter:
+`hallooo babi,
+
+i'm really glad you barged in my life, and really grateful you're still here with me in this chaotic world.
+
+thank you for everything you did for me, i also want to pay the favor back, kasi we're both in this together na ehh 🥹
+
+thank you for choosing me, for staying, and for being patient with me even on my worst days. thank you for the little things na minsan hindi mo napapansin pero sobrang laki ng meaning sa akin: the messages, the laughs, the way you listen, the way you care. thank you for every hug that felt like home, for every smile that fixed my whole day, and for every "i'm here" that meant more than you know. i'm so grateful for you babi, more than i can ever explain 💕
+
+you're my calm in the storm. when everything gets loud and heavy and scary, ikaw yung nilalapitan ng heart ko, despite the arguments and mood swings. a message lang from you, one look, and suddenly i feel like everything's okay na ulit. you make the hard days softer and the good days so much brighter. with you, even the chaos feels peaceful 🌊
+
+and babi, hindi pa tayo tapos ha. we're gonna go on so many more dates: movie dates with way too much popcorn, beach dates with sand on our feet and sunsets all to ourselves, food trips, road trips, a japan trip, hikings. i want to make a hundred islands' worth of memories with you, and then a hundred more after that. just a bit more time and i promise all of this is gonna happen, so let's do what we can right now, okay? 🏝️🎬🌅
+
+please stay strong for me, my love. i know acads and your current situation are tiring and some days feel like too much, but you're so close na. konting tiis na lang, just 2 more years and you'll graduate na 🎓 and i'll be right beside you for every single day of it. every late night, every stressful week, every tear, every win, i'll be there holding your hand. you're never doing this alone. i believe in you more than you believe in yourself, and i'm already so proud of you.
+
+and after all of it, i can't wait for the little things: waking up together in bed, messy hair and sleepy smiles, your head on my chest, slow mornings with nowhere to be 🛏️ that's the future i dream about, babi. just you and me, and a whole life of ordinary days that feel magical because my pretty babi's in them.
+
+no matter what happens, i'll always choose you.
+
+i love you so much, babi 💞
+
+forever yours,
+`
+};
+/* ======================================== */
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const rand = (a,b) => Math.random()*(b-a)+a;
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d }catch(e){ return d } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)) }catch(e){} }
+};
+function el(tag,cls,text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+
+$('#nm').textContent = CONFIG.herName;
+$('#from').textContent = '— ' + CONFIG.fromName;
+
+const EMO = ['🌸','🌷','🌼','🌻','🌹','🪻','💐','🍀','🌿','💚','💗','💖','💕','🦋','🐝','🍓','🧸','🐰','🐸','🥰','😘','😍','✨','🫶','🍃','🌺','🐞','☁️','🎀','💌'];
+const KAO = ['(｡♥‿♥｡)','(◍•ᴗ•◍)❤','ʕ•ᴥ•ʔ','(づ｡◕‿‿◕｡)づ','(˶ᵔ ᵕ ᵔ˶)','(≧◡≦) ♡','( ˘ ³˘)♥','(*´▽`*)','uwu ♡','owo','(๑˃ᴗ˂)ﻭ','I love you!'];
+
+/* ================= TABS ================= */
+let current = 'home';
+function show(tab){
+  if(tab==='surprise' && $('#tabSurprise').classList.contains('hidden')) tab='home';
+  current = tab;
+  $$('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+tab));
+  $$('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+  scrollTo({top:0,behavior:'auto'});
+  if(tab==='roulette') requestAnimationFrame(()=>{ setupWheel(); renderEditor(); });
+  try{ history.replaceState(null,'','#'+tab) }catch(e){}
+}
+$('#tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) show(b.dataset.tab); });
+$('#backHome').addEventListener('click',()=>show('home'));
+
+/* ================= FLOWERS ================= */
+const PALETTES = [
+  ['#ff8fb1','#ffd1e0'],['#ffb347','#ffe2b8'],['#cdb4ff','#eadfff'],
+  ['#ff6b9d','#ffc2d9'],['#fff3a0','#ffe066'],['#9be7c4','#d6f7e8'],['#ff9a8b','#ffd0c7'],['#ffb3cc','#fff1f6']
+];
+const HEART = "M0 -0.3 C0.15 -0.95 1 -0.85 1 -0.2 C1 0.4 0.3 0.75 0 1.1 C-0.3 0.75 -1 0.4 -1 -0.2 C-1 -0.85 -0.15 -0.95 0 -0.3Z";
+function flowerSVG(size){
+  const [petal,center] = pick(PALETTES);
+  const cx = size/2, cy = size*0.38, stemH = size*0.62;
+  const r = Math.random();
+  const type = r<0.45 ? 'daisy' : r<0.75 ? 'heart' : 'tulip';
+  let head='';
+  if(type==='daisy'){
+    const n = Math.floor(rand(5,9)), pr = size*0.26;
+    for(let i=0;i<n;i++){
+      head += `<ellipse cx="${cx}" cy="${cy-pr*1.1}" rx="${pr*0.62}" ry="${pr}" fill="${petal}" stroke="#fff" stroke-width="1.5" transform="rotate(${(360/n)*i} ${cx} ${cy})" opacity=".95"/>`;
+    }
+    head += `<circle cx="${cx}" cy="${cy}" r="${pr*0.55}" fill="${center}" stroke="#fff" stroke-width="1.5"/>`;
+  } else if(type==='heart'){
+    const n = Math.floor(rand(5,8)), pr = size*0.26;
+    for(let i=0;i<n;i++){
+      head += `<g transform="rotate(${(360/n)*i} ${cx} ${cy})"><path d="${HEART}" fill="${petal}" stroke="#fff" stroke-width="0.06" transform="translate(${cx} ${cy-pr*1.25}) scale(${pr*0.85})"/></g>`;
+    }
+    head += `<circle cx="${cx}" cy="${cy}" r="${pr*0.45}" fill="${center}" stroke="#fff" stroke-width="1.5"/>`;
+  } else {
+    const w=size*0.26, h=size*0.3;
+    head = `<path d="M${cx-w} ${cy-h*0.7} Q${cx-w} ${cy+h*0.6} ${cx} ${cy+h*0.7} Q${cx+w} ${cy+h*0.6} ${cx+w} ${cy-h*0.7} L${cx+w*0.5} ${cy-h*0.15} L${cx} ${cy-h} L${cx-w*0.5} ${cy-h*0.15} Z" fill="${petal}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M${cx} ${cy-h} L${cx-w*0.1} ${cy+h*0.5} M${cx} ${cy-h} L${cx+w*0.1} ${cy+h*0.5}" stroke="#fff" stroke-width="1.2" opacity=".6" fill="none"/>`;
+  }
+  return `<svg width="${size}" height="${size+stemH*0.5}" viewBox="0 0 ${size} ${size+stemH*0.5}">
+    <path d="M${cx} ${cy} Q${cx+size*0.12} ${cy+stemH*0.5} ${cx} ${cy+stemH}" stroke="#6fcf8a" stroke-width="${size*0.05}" fill="none" stroke-linecap="round"/>
+    <ellipse cx="${cx+size*0.13}" cy="${cy+stemH*0.55}" rx="${size*0.12}" ry="${size*0.05}" fill="#8fd694" transform="rotate(-30 ${cx+size*0.13} ${cy+stemH*0.55})"/>
+    <ellipse cx="${cx-size*0.12}" cy="${cy+stemH*0.75}" rx="${size*0.1}" ry="${size*0.045}" fill="#7bc47f" transform="rotate(28 ${cx-size*0.12} ${cy+stemH*0.75})"/>
+    ${head}
+  </svg>`;
+}
+const garden = $('#garden');
+function bloom(x,y){
+  const size = rand(54,104);
+  const e = el('div','flower');
+  e.style.left=(x-size/2)+'px';
+  e.style.top=(y-size*0.38)+'px';
+  e.innerHTML = flowerSVG(size);
+  garden.appendChild(e);
+  if(garden.children.length>110) garden.firstChild.remove();
+}
+function sticker(x,y,text,big){
+  const s = el('div','sticker',text);
+  s.style.left=Math.max(8,Math.min(x,innerWidth-60))+'px';
+  s.style.top=y+'px';
+  s.style.fontSize=(big?rand(26,40):rand(22,36))+'px';
+  if(big) s.style.color='#e0457b';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),3500);
+}
+function bouquet(){
+  for(let i=0;i<38;i++) setTimeout(()=>bloom(rand(24,innerWidth-24), rand(innerHeight*0.12, innerHeight-120)), i*65);
+  for(let i=0;i<24;i++) setTimeout(()=>sticker(rand(10,innerWidth-50), rand(80,innerHeight-130), pick(EMO)), i*100);
+  for(let i=0;i<9;i++)  setTimeout(()=>sticker(rand(10,innerWidth-170), rand(90,innerHeight-140), pick(KAO), true), 150+i*280);
+  burst(innerWidth/2, innerHeight/2, 46);
+  setTimeout(()=>burst(innerWidth*0.25, innerHeight*0.4, 24), 400);
+  setTimeout(()=>burst(innerWidth*0.75, innerHeight*0.4, 24), 700);
+}
+
+/* ================= PARTICLES ================= */
+const cv = $('#fx'), ctx = cv.getContext('2d');
+let parts=[];
+function resize(){cv.width=innerWidth;cv.height=innerHeight}
+addEventListener('resize',resize);resize();
+function burst(x,y,n=16){
+  for(let i=0;i<n;i++){
+    const a=rand(0,Math.PI*2), s=rand(2,7);
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,life:1,
+      size:rand(14,26),ch:pick(['💖','💕','💗','🌸','✨','💓','🌷','💚','🍀','🦋','🎀'])});
+  }
+}
+function tick(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  parts = parts.filter(p=>p.life>0);
+  for(const p of parts){
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.life-=0.014;
+    ctx.globalAlpha=Math.max(p.life,0);
+    ctx.font=p.size+'px serif';
+    ctx.fillText(p.ch,p.x,p.y);
+  }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(tick);
+}
+tick();
+
+/* click / tap = bloom (home + surprise only) */
+addEventListener('click',e=>{
+  if(current!=='home' && current!=='surprise') return;
+  if(e.target.closest('button,input,select,textarea,.card,.big-heart,.tabs,.letter,.brand')) return;
+  bloom(e.clientX,e.clientY);
+  burst(e.clientX,e.clientY,8);
+});
+let lastTrail=0;
+addEventListener('mousemove',e=>{
+  const now=performance.now();
+  if(now-lastTrail<70) return; lastTrail=now;
+  parts.push({x:e.clientX,y:e.clientY,vx:rand(-.6,.6),vy:rand(-1.2,-.2),life:.8,size:rand(10,16),ch:pick(['💗','💕','✨','💚'])});
+});
+
+/* ambient floaties */
+setInterval(()=>{
+  const h=el('div','float-heart',pick(['💗','💕','🩷','💖','🌸','💚','🍀','🌿']));
+  h.style.left=rand(0,100)+'vw';
+  h.style.fontSize=rand(16,34)+'px';
+  h.style.opacity=rand(.35,.8);
+  h.style.animationDuration=rand(7,13)+'s';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),13500);
+},700);
+
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2200)}
+
+/* ================= HOME ================= */
+const messages=["I love you 💕","You're my favorite person","Forever & always","You + me 🌷","My heart is yours 💖","Thank you for being you"];
+let mi=0;
+$('#bigHeart').addEventListener('click',e=>{
+  const r=e.target.getBoundingClientRect();
+  burst(r.left+r.width/2,r.top+r.height/2,22);
+  toast(messages[mi++%messages.length]);
+});
+$('#bloomBtn').addEventListener('click',bouquet);
+
+function renderCounter(){
+  const start=new Date(CONFIG.startDate+'T00:00:00');
+  let ms=Date.now()-start.getTime(); if(isNaN(ms)||ms<0) ms=0;
+  const s=Math.floor(ms/1000);
+  const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
+  $('#counter').innerHTML=[[d,'days'],[h,'hours'],[m,'minutes'],[sec,'seconds']]
+    .map(([v,l])=>`<div class="tile"><b>${v}</b><span>${l}</span></div>`).join('');
+}
+renderCounter();setInterval(renderCounter,1000);
+
+CONFIG.reasons.forEach(([emo,txt])=>{
+  const c=el('div','card');
+  const f=el('div','face front',emo), b=el('div','face back',txt);
+  const i=el('div','inner'); i.append(f,b); c.append(i);
+  c.addEventListener('click',()=>{
+    c.classList.toggle('flip');
+    const r=c.getBoundingClientRect();
+    burst(r.left+r.width/2,r.top+r.height/2,10);
+  });
+  $('#cards').append(c);
+});
+
+/* typed letter */
+const letterEl=$('#letter');
+const fullLetter=CONFIG.letter+CONFIG.fromName;
+let typed=false, skip=false;
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+new IntersectionObserver((es,ob)=>{
+  if(es[0].isIntersecting&&!typed){
+    typed=true;ob.disconnect();
+    let i=0;
+    const step=()=>{
+      if(skip){ letterEl.textContent=fullLetter; return; }
+      letterEl.innerHTML=esc(fullLetter.slice(0,i))+'<span class="caret"></span>';
+      if(i++<fullLetter.length) setTimeout(step,14); else letterEl.textContent=fullLetter;
+    };step();
+  }
+},{threshold:.3}).observe(letterEl);
+$('#letterBox').addEventListener('click',()=>{ skip=true; letterEl.textContent=fullLetter; });
+
+/* the question */
+const no=$('#no');
+function dodge(){
+  no.style.position='fixed';
+  no.style.left=rand(20,Math.max(30,innerWidth-120))+'px';
+  no.style.top=rand(80,Math.max(100,innerHeight-160))+'px';
+  toast(pick(['Nice try 😝','Wrong button 💕','Nope nope nope','Try the other one 🥰']));
+}
+no.addEventListener('mouseenter',dodge);
+no.addEventListener('touchstart',e=>{e.preventDefault();dodge()},{passive:false});
+no.addEventListener('click',dodge);
+
+function unlockSurprise(){ $('#tabSurprise').classList.remove('hidden'); store.set('lq_yes',true); }
+if(store.get('lq_yes',false)) unlockSurprise();
+$('#yes').addEventListener('click',()=>{
+  $('#qtext').textContent='Yaaay!! I knew it 🥹💖';
+  unlockSurprise();
+  show('surprise');
+  bouquet();
+  for(let i=0;i<6;i++) setTimeout(()=>burst(rand(60,innerWidth-60),rand(80,innerHeight-120),30),i*250);
+});
+
+/* ================= SURPRISE FLOWER ================= */
+(function buildBigFlower(){
+  let l1='',l2='',l3='',ring='';
+  for(let i=0;i<12;i++) l1+=`<ellipse cx="200" cy="108" rx="30" ry="88" fill="url(#gp1)" stroke="#fff" stroke-width="2" stroke-opacity=".8" transform="rotate(${i*30} 200 200)"/>`;
+  for(let i=0;i<8;i++)  l2+=`<ellipse cx="200" cy="130" rx="24" ry="64" fill="url(#gg)" stroke="#fff" stroke-width="2" stroke-opacity=".8" transform="rotate(${i*45+22.5} 200 200)"/>`;
+  for(let i=0;i<8;i++)  l3+=`<ellipse cx="200" cy="152" rx="18" ry="42" fill="url(#gp2)" stroke="#fff" stroke-width="2" transform="rotate(${i*45} 200 200)"/>`;
+  for(let i=0;i<24;i++){
+    const a=i*15*Math.PI/180, x=200+Math.cos(a)*192, y=200+Math.sin(a)*192;
+    ring+= i%2 ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="#8fd9ae"/>`
+                : `<path d="${HEART}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(7)" fill="#ff8fb1"/>`;
+  }
+  $('#stage').innerHTML = `
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gp1" cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#ffd1e3"/><stop offset="1" stop-color="#ff7fa8"/></radialGradient>
+        <radialGradient id="gg"  cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#d9fbe6"/><stop offset="1" stop-color="#5fcf93"/></radialGradient>
+        <radialGradient id="gp2" cx="50%" cy="20%" r="90%"><stop offset="0" stop-color="#fff0f6"/><stop offset="1" stop-color="#ff9dbd"/></radialGradient>
+        <radialGradient id="gc"  cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="#fffbd1"/><stop offset="1" stop-color="#ffc94d"/></radialGradient>
+      </defs>
+      <g class="layer l4">${ring}</g>
+      <g class="layer l1">${l1}</g>
+      <g class="layer l2">${l2}</g>
+      <g class="layer l3">${l3}</g>
+      <circle cx="200" cy="200" r="36" fill="url(#gc)" stroke="#fff" stroke-width="4"/>
+      <path d="${HEART}" transform="translate(200 198) scale(15)" fill="#ff6b9d" stroke="#fff" stroke-width="0.12"/>
+    </svg>
+    <div class="orbit">${[0,1,2,3,4,5,6,7].map(i=>`<span style="transform:rotate(${i*45}deg) translateY(-215px)">${['💖','🍀','🦋','🌸','💚','✨','🐝','🎀'][i]}</span>`).join('')}</div>`;
+  const st=$('#stage');
+  for(let i=0;i<8;i++){
+    const t=el('div','twinkle','✨');
+    t.style.left=rand(-6,100)+'%'; t.style.top=rand(-6,100)+'%';
+    t.style.animationDelay=rand(0,2)+'s'; t.style.fontSize=rand(14,26)+'px';
+    st.appendChild(t);
+  }
+})();
+
+/* ================= DATES ================= */
+let dates = store.get('lq_dates_v1',null) || CONFIG.defaultDates.slice();
+function saveDates(){ store.set('lq_dates_v1',dates); }
+const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+function daysFromToday(d){ const t=new Date(); t.setHours(0,0,0,0); return Math.round((new Date(d+'T00:00:00')-t)/864e5); }
+function dateCard(x,up){
+  const c=el('div','date-card'+(up?' up':''));
+  c.append(el('div','date-emoji',x.emoji||'💕'));
+  const info=el('div','date-info');
+  const b=el('b',null,x.title);
+  if(x.tag) b.append(el('span','chip'+(up?' g':''),x.tag));
+  info.append(b, el('small',null,fmt(x.date)));
+  const dd=daysFromToday(x.date);
+  const when = dd===0 ? 'today! 🥰' : up ? `in ${dd} day${dd===1?'':'s'} ✨` : `${-dd} day${dd===-1?'':'s'} ago`;
+  info.append(el('small',null,when));
+  if(x.note) info.append(el('small',null,x.note));
+  const del=el('button','x','✕'); del.title='remove';
+  del.addEventListener('click',()=>{ if(confirm('Remove "'+x.title+'"?')){ dates=dates.filter(d=>d.id!==x.id); saveDates(); renderDates(); } });
+  c.append(info,del);
+  return c;
+}
+function renderDates(){
+  const up=dates.filter(d=>daysFromToday(d.date)>=0).sort((a,b)=>a.date.localeCompare(b.date));
+  const past=dates.filter(d=>daysFromToday(d.date)<0).sort((a,b)=>b.date.localeCompare(a.date));
+  const U=$('#upcoming'), P=$('#past'); U.innerHTML=''; P.innerHTML='';
+  up.length ? up.forEach(x=>U.append(dateCard(x,true))) : U.append(el('div','empty','nothing planned yet… add our next date below 💌'));
+  past.length ? past.forEach(x=>P.append(dateCard(x,false))) : P.append(el('div','empty','our memories will show up here 🌷'));
+}
+$('#dateForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  dates.push({id:'d_'+Date.now(),title:$('#dTitle').value.trim(),date:$('#dDate').value,tag:$('#dTag').value.trim(),
+    note:$('#dNote').value.trim(),emoji:$('#dEmoji').value});
+  saveDates(); renderDates(); e.target.reset();
+  burst(innerWidth/2,innerHeight/2,18); toast('Added to our list 💖');
+});
+renderDates();
+
+/* ================= ROULETTE ================= */
+const MAIN = [
+  {id:'cuisine', icon:'🍽️', name:'Cuisine', items:['Filipino','Japanese','Korean','Chinese','Italian','American','Thai','Mexican','Vietnamese','Mediterranean']},
+  {id:'fastfood',icon:'🍔', name:'Fast food', items:['Jollibee',"McDonald's",'KFC','Mang Inasal','Chowking','Greenwich','Burger King',"Shakey's","Wendy's",'Yellow Cab','Pizza Hut','Army Navy']},
+  {id:'place',   icon:'🏪', name:'Type of place', items:['Restaurant','Café','Street food crawl','Buffet','Food court','Takeout picnic','Cook at home','Samgyup place','Hotpot house']},
+  {id:'dessert', icon:'🧋', name:'Drinks & sweets', items:['Milk tea','Iced coffee','Matcha','Ice cream','Halo-halo','Croffle','Crepe','Cake slice','Mango float','Bingsu','Brownies','Smoothie']},
+  {id:'dateidea',icon:'💕', name:'Date idea', items:['Movie date','Beach date','Picnic in the park','Arcade & games','Museum / art walk','Food trip','Sunset walk','Window shopping','Stargazing','Staycation','Karaoke','MLBB duo night']},
+  {id:'movie',   icon:'🎬', name:'Movie genre', items:['Romcom','Comedy','Horror','Animated','Fantasy','Drama','Action','Anime','K-drama movie']},
+  {id:'dare',    icon:'😘', name:'Cute dares', items:['Forehead kiss','20-second hug','Say 3 things you love about me','Selfie together','Piggyback ride','Slow dance','Send an "i love you" voice message','Hold hands the whole walk','Feed each other']}
+];
+const DISHES = [
+  {id:'d_filipino',  cuisine:'Filipino',  icon:'🇵🇭', items:['Sinigang','Adobo','Sisig','Kare-kare','Crispy pata','Bulalo','Lechon kawali','Inihaw na liempo','Tapsilog','Pancit']},
+  {id:'d_japanese',  cuisine:'Japanese',  icon:'🍣', items:['Ramen','Sushi','Tonkatsu','Takoyaki','Katsudon','Yakiniku','Udon','Okonomiyaki','Gyoza']},
+  {id:'d_korean',    cuisine:'Korean',    icon:'🥢', items:['Samgyupsal','Bibimbap','Tteokbokki','Korean fried chicken','Army stew','Kimbap','Jjajangmyeon','Bulgogi']},
+  {id:'d_chinese',   cuisine:'Chinese',   icon:'🥟', items:['Dimsum','Hotpot','Beef noodles','Siomai','Yangchow fried rice','Hakaw','Peking duck','Lomi']},
+  {id:'d_italian',   cuisine:'Italian',   icon:'🍝', items:['Pizza','Carbonara','Lasagna','Gnocchi','Risotto','Pesto pasta','Bruschetta']},
+  {id:'d_american',  cuisine:'American',  icon:'🍔', items:['Burger','Fried chicken','Steak','Mac and cheese','Nachos','Hotdog','Wings','Pancakes']},
+  {id:'d_thai',      cuisine:'Thai',      icon:'🍜', items:['Pad thai','Green curry','Tom yum','Mango sticky rice','Pad krapow','Satay']},
+  {id:'d_mexican',   cuisine:'Mexican',   icon:'🌮', items:['Tacos','Burrito','Quesadilla','Nachos','Fajitas','Churros']},
+  {id:'d_vietnamese',cuisine:'Vietnamese',icon:'🍲', items:['Pho','Banh mi','Spring rolls','Bun cha','Com tam']},
+  {id:'d_mediterranean',cuisine:'Mediterranean',icon:'🥙', items:['Shawarma','Kebab','Hummus & pita','Falafel','Gyro','Greek salad']}
+];
+const CUISINE_TO_DISH = Object.fromEntries(DISHES.map(d=>[d.cuisine,d.id]));
+let wstate = store.get('lq_wheels_v1',{edits:{},custom:[]});
+function saveW(){ store.set('lq_wheels_v1',wstate); }
+const allDefs = () => [...MAIN, ...DISHES.map(d=>({id:d.id,icon:d.icon,name:d.cuisine+' dishes',items:d.items})), ...wstate.custom.map(c=>({...c,custom:true}))];
+const defOf = id => allDefs().find(w=>w.id===id) || MAIN[0];
+const getItems = id => { const d=defOf(id); return (wstate.edits[d.id] || d.items).slice(); };
+let curWheel='cuisine', rot=0, spinning=false, wSize=300;
+
+function renderChips(){
+  const c=$('#chips'); c.innerHTML='';
+  [...MAIN, ...wstate.custom].forEach(w=>{
+    const b=el('button',curWheel===w.id?'on':'',w.icon+' '+w.name);
+    b.addEventListener('click',()=>selectWheel(w.id));
+    c.append(b);
+  });
+  const sel=$('#dishSel'); sel.innerHTML='';
+  const o0=el('option',null,'🍴 Pick dishes by cuisine…'); o0.value=''; sel.append(o0);
+  DISHES.forEach(d=>{ const o=el('option',null,d.icon+' '+d.cuisine+' dishes'); o.value=d.id; if(curWheel===d.id) o.selected=true; sel.append(o); });
+  if(!DISHES.some(d=>d.id===curWheel)) sel.value='';
+}
+$('#dishSel').addEventListener('change',e=>{ if(e.target.value) selectWheel(e.target.value); });
+$('#dishSel').style.cssText='max-width:340px;margin:0 auto 6px;display:block';
+
+function selectWheel(id){
+  if(spinning) return;
+  curWheel=id; rot=0; $('#result').innerHTML='';
+  renderChips(); setupWheel(); renderEditor();
+}
+
+const wc=$('#wheel'), wctx=wc.getContext('2d');
+const SEG=['#ffb3cc','#bff0d2','#fff1c9','#ffd0e0','#9fe3bd','#ffe3ee','#d5f5e1','#ff9fbd'];
+function setupWheel(){
+  wSize=Math.max(220,Math.min(340,innerWidth-64));
+  const dpr=devicePixelRatio||1;
+  wc.style.width=wc.style.height=wSize+'px';
+  wc.width=wc.height=Math.round(wSize*dpr);
+  wctx.setTransform(dpr,0,0,dpr,0,0);
+  drawWheel();
+}
+function drawWheel(){
+  const items=getItems(curWheel), n=items.length, s=wSize, cx=s/2, r=s/2-4;
+  wctx.clearRect(0,0,s,s);
+  if(n<1){
+    wctx.fillStyle='#fff'; wctx.beginPath(); wctx.arc(cx,cx,r,0,Math.PI*2); wctx.fill();
+    wctx.fillStyle='#4a2c3d'; wctx.font='700 16px Quicksand'; wctx.textAlign='center'; wctx.fillText('add some options 💕',cx,cx); return;
+  }
+  const seg=Math.PI*2/n;
+  for(let i=0;i<n;i++){
+    let ci=i%SEG.length; if(i===n-1 && n>1 && ci===0) ci=3;
+    const a0=rot+i*seg;
+    wctx.beginPath(); wctx.moveTo(cx,cx); wctx.arc(cx,cx,r,a0,a0+seg); wctx.closePath();
+    wctx.fillStyle=SEG[ci]; wctx.fill(); wctx.strokeStyle='#fff'; wctx.lineWidth=2.5; wctx.stroke();
+    wctx.save(); wctx.translate(cx,cx); wctx.rotate(a0+seg/2);
+    wctx.fillStyle='#4a2c3d'; wctx.textAlign='right'; wctx.textBaseline='middle';
+    wctx.font=`700 ${n>14?10:n>9?12:14}px Quicksand, sans-serif`;
+    const max=n>12?12:16; let t=items[i]; if(t.length>max) t=t.slice(0,max-1)+'…';
+    wctx.fillText(t, r-14, 0);
+    wctx.restore();
+  }
+  wctx.beginPath(); wctx.arc(cx,cx,26,0,Math.PI*2); wctx.fillStyle='#fff'; wctx.fill();
+  wctx.strokeStyle='#8fd9ae'; wctx.lineWidth=4; wctx.stroke();
+  wctx.font='24px serif'; wctx.textAlign='center'; wctx.textBaseline='middle'; wctx.fillStyle='#000'; wctx.fillText('💕',cx,cx+1);
+}
+function spin(){
+  const items=getItems(curWheel);
+  if(spinning) return;
+  if(items.length<2){ toast('add at least 2 options 💕'); return; }
+  spinning=true; $('#spinBtn').disabled=true; $('#result').innerHTML='';
+  const start=rot, total=Math.PI*2*(5+Math.random()*3)+Math.random()*Math.PI*2;
+  const dur=4800, t0=performance.now();
+  const ease=t=>1-Math.pow(1-t,4);
+  (function f(now){
+    const t=Math.min((now-t0)/dur,1);
+    rot=start+total*ease(t); drawWheel();
+    if(t<1) requestAnimationFrame(f); else finish(items);
+  })(t0);
+}
+function finish(items){
+  spinning=false; $('#spinBtn').disabled=false;
+  const seg=Math.PI*2/items.length, TWO=Math.PI*2;
+  const ang=(((-Math.PI/2 - rot)%TWO)+TWO)%TWO;
+  const win=items[Math.min(items.length-1,Math.floor(ang/seg))];
+  const box=$('#result'); box.innerHTML='';
+  box.append(el('div','big','✨ '+win+' ✨'));
+  if(curWheel==='cuisine' && CUISINE_TO_DISH[win]){
+    const b=el('button','btn small green','Now pick a '+win+' dish 🍴'); b.style.marginTop='10px';
+    b.addEventListener('click',()=>selectWheel(CUISINE_TO_DISH[win]));
+    box.append(document.createElement('br'),b);
+  }
+  const r=wc.getBoundingClientRect();
+  burst(r.left+r.width/2,r.top+r.height/2,30);
+}
+$('#spinBtn').addEventListener('click',spin);
+wc.addEventListener('click',spin);
+
+function renderEditor(){
+  const d=defOf(curWheel);
+  $('#edTitle').textContent='Edit "'+d.name+'" ✏️';
+  const box=$('#items'); box.innerHTML='';
+  getItems(curWheel).forEach((t,i)=>{
+    const it=el('div','item',t);
+    const x=el('button',null,'✕'); x.title='remove';
+    x.addEventListener('click',()=>{ const a=getItems(curWheel); a.splice(i,1); wstate.edits[d.id]=a; saveW(); drawWheel(); renderEditor(); });
+    it.append(x); box.append(it);
+  });
+  const rb=$('#resetWheel');
+  rb.textContent = d.custom ? 'Delete this wheel 🗑️' : 'Reset to default';
+}
+function addItem(){
+  const v=$('#newItem').value.trim(); if(!v) return;
+  const a=getItems(curWheel); a.push(v); wstate.edits[curWheel]=a; saveW();
+  $('#newItem').value=''; drawWheel(); renderEditor();
+}
+$('#addItem').addEventListener('click',addItem);
+$('#newItem').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addItem(); } });
+$('#resetWheel').addEventListener('click',()=>{
+  const d=defOf(curWheel);
+  if(d.custom){
+    if(!confirm('Delete "'+d.name+'"?')) return;
+    wstate.custom=wstate.custom.filter(c=>c.id!==d.id); delete wstate.edits[d.id]; saveW();
+    curWheel='cuisine';
+  } else { delete wstate.edits[d.id]; saveW(); }
+  rot=0; renderChips(); setupWheel(); renderEditor();
+});
+$('#wheelForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const items=$('#wItems').value.split(/[,\n]/).map(s=>s.trim()).filter(Boolean);
+  if(items.length<2){ toast('add at least 2 options 💕'); return; }
+  const w={id:'c_'+Date.now(),icon:'✨',name:$('#wName').value.trim(),items};
+  wstate.custom.push(w); saveW(); e.target.reset();
+  selectWheel(w.id); toast('New wheel created 💖');
+});
+renderChips();
+addEventListener('resize',()=>{ if(current==='roulette') setupWheel(); });
+
+/* ================= START ================= */
+const startTab=(location.hash||'').slice(1);
+if(['home','dates','roulette','surprise'].includes(startTab)) show(startTab);
+</script>
+</body>
+</html>
